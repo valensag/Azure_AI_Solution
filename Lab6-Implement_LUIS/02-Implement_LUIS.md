@@ -164,39 +164,63 @@ When choosing utterances, it can be helpful to use a combination of questions, c
 
 ## Lab 6.2: Training the LUIS model
 
-We are now ready to train our model.
+We're now ready to train our model. In this exercise, you will perform a simple training operation in order to test your model.  The testing will take place using the built-in testing panel in the LUIS portal.
 
-1. Select **Train** in the top right bar.  This builds a model to do utterance --> intent mapping with the training data you've provided. Training is not always immediate. Sometimes, it gets queued and can take several minutes.
+1. In the top toolbar, select **Train**. During training, LUIS builds a model to map utterances to intents based on the training data you’ve provided.
 
-1. Select **MANAGE** in the top bar. You'll have several options on the left side of the window (Application Information, Keys and Endpoints, Publish Settings, Versions, Collaborators). You can read more about the various publish options [here](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/PublishApp).
+    > [!TIP]
+    > Training is not always immediate. Sometimes it gets queued and can take several minutes.
 
-1. Select **Azure resources**, you can use the keys here for your LUIS integration later or simply use the keys from the Azure Portal
+## Create a public endpoint for the LUIS service
 
-1. In the top bar, click **Publish**. You'll have the option to publish to your "Production" or "Staging" endpoint.
+1. After training is finished, select **Manage** in the top toolbar. The following options will appear on the left toolbar:
 
-1. Select **Production**, and [read about the reasons for the two endpoints](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-version).
+    > [!NOTE]
+    > The categories on the left pane may change as the portals are updated.  As a result, the keys and endpoints may fall under a different category than the one listed here.
 
-1. Finally, select **Publish**.
+    - **Publish settings**
+    - **Azure Resources**
+    - **Versions**
+    - **Collaborators**
 
-![Publish LUIS App](../images//LuisPublish.png)
+1. Select **Azure Resources**. This screen is used to manage the URL endpoints used to access the LUIS service.
 
-Publishing creates an endpoint to call the LUIS model.  The URL will be displayed, which will be explained in a later lab.
+    > [!NOTE]
+    > An endpoint named **Starter_Key** is automatically created for testing purposes, and you could use that here - however to use the service in a production environment or inside of an application, you will always want to tie it to a real Language Understanding resource created in Azure.
 
-1. Select **Application Information**, copy the **Application ID**.
+1. You should see a **Prediction Resource** and a **Starter_Key** resource already created.  If you see the **Prediction Resource**, advance to the next section on **Publish the app**.
+1. If you do not see an existing **Prediction Resource**, select **Add prediction resource**. The **Tenant** will already be selected.
+1. Select your subscription, and the resource you created in the Azure portal earlier and then select **Done** to connect the Language Understanding resource to the LUIS service.
 
-1. Select **Azure Resources**, copy the Key and the Endpoint URL.
+## Publish the app
 
-**Note** We won't use the whole url, you will only need the **https://{region}.api.cognitive.microsoft.com** part
+1. In the top toolbar, select **Publish**.
 
-1. Select **Test** in the top right bar. Try typing a few utterances and see the intents returned. Familiarize yourself with [interactive testing](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/Train-Test#interactive-testing) and [reviewing endpoint utterances](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-how-to-review-endoint-utt) as you may want to do this now or in a future lab.
+   > [!NOTE]
+   > You can publish to your **Production** or **Staging** endpoint. Select **Production**, and read about the reasons for the two endpoints.
 
-One quick example is shown below. I have noticed that my model incorrectly assigned "send me a swimming photo" as SharePic, when it should be SearchPics. I reassigned the intent.
+1. Under **Choose your publishing slot and settings**, select **Production Slot** and then select **Done**.
 
-![Test LUIS](../images//ReassignIntent.png)
+    Publishing creates an endpoint to call the LUIS model. The endpoint URL will be displayed. Copy the endpoint URL and add it to your list of keys for future use.
 
-Now I need to retrain my app by selecting the Train button. I then tested the same utterance and compared the results between my recently trained and previously published model. Remember, you'll have to republish your model to see updates in the application that uses the model.
+1. In the top bar, select **Test**. Try typing a few utterances and see which intents are returned. Here are some examples you can try:
 
-![Reassign Intent](../images//ReassignIntentAfter.png)
+   | Utterance | Result | Score meaning |
+   |---------|---------|---------|
+   | **Show me pictures of a local beach** | Returns the **SearchPics** intent with a score | Positive match |
+   | **Hello** | Returns the **Greeting** intent with a score | Fairly positive match |
+   | **Send to Tom** | Returns the **Utilities** with a low score | Needs retraining or doesn't match any intents |
+
+To retrain the model for utterances with low scores, take the following steps:
+
+1. Beside the low-scoring utterance (in this case, **Send to Tom**), select **Inspect**.
+1. Beside **Top-scoring intent**, select the drop-down and choose **SharePic** from the list.
+1. Close the **Test** panel.
+1. Select the **Train** button to retrain your model.
+1. Test the **Send to Tom** utterance again. It should now return the **SharePic** intent with a higher score.
+
+Your LUIS app is now ready to be used by client applications, tested in a browser through the listed endpoint, or integrated into a bot.
+
 
 You can also [test your published endpoint in a browser](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/PublishApp#test-your-published-endpoint-in-a-browser). Copy the Endpoint URL. To open this URL in your browser, set the URL parameter `&q=` to your test query. For example, append `Find pictures of dogs` to your URL, and then press Enter. The browser displays the JSON response of your HTTP endpoint.
 
