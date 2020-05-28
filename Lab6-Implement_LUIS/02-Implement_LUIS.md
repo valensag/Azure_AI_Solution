@@ -106,15 +106,15 @@ Let's create intents for the user requesting each of these.
 
 Let's see how to create an entity.  When the user requests to search the pictures, they may specify what they are looking for.  Let's capture that in an entity.
 
-1. Select on **Entities** in the left-hand column and then select **Create new entity**.  
+1. Select on **Entities** in the left-hand column and then select **+ Create**.  
 
 1. Give it an entity name **facet**
 
-1. For the entity type select ["Simple"](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-concept-entity-types).  
+1. For the entity type select **Machine learned**.  
 
-1. Select **Done**.
+1. Select **Create**.
 
-![Add Facet Entity](../images//LuisCreateEntity.png)
+![Adding an entity named facet, of type Simple](../images/select-facet.png)
 
 1. Select **Intents** in the left-hand sidebar and then click the **Create new intent** button.  
 
