@@ -82,6 +82,9 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. Scroll down until you see **Echo Bot (Bot Framework v4)**
 
+>[!CAUTION]
+>Depending on the version of Visual Studio installed, the below screenshot may be different from your own.  If you see multiple versions listed for the Echo Bot template, choose version 3.1 and not version 2.1.
+
 ![Select the Echo Bot project template](../images/NewBotProject.png)
 
 1. Select **Next**
