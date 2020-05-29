@@ -12,7 +12,7 @@ The LUIS functionality and functionality has already been covered in the worksho
 
 Now that we know what LUIS is, we'll want to plan our LUIS app. We already created a basic bot ("PictureBot") that responds to messages containing certain text. We will need to create intents that trigger the different actions that our bot can do, and create entities that require different actions. For example, an intent for our PictureBot may be "OrderPic" and it triggers the bot to provide an appropriate response.
 
-For example, in the case of Search (not implemented here), our PictureBot intent may be "SearchPics" and it triggers Azure Cognitive Search service to look for photos, which requires a "facet" entity to know what to search for.  You can see more examples for planning your app [here](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/plan-your-app).
+For example, in the case of Search (not implemented here), our PictureBot intent may be "SearchPic" and it triggers Azure Cognitive Search service to look for photos, which requires a "facet" entity to know what to search for.  You can see more examples for planning your app [here](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/plan-your-app).
 
 Once we've thought out our app, we are ready to [build and train it](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-get-started-create-app).
 
@@ -118,7 +118,7 @@ Let's see how to create an entity.  When the user requests to search the picture
 
 1. Select **Intents** in the left-hand sidebar and then click the **Create new intent** button.  
 
-1. Give it an intent name of **SearchPics** and then click **Done**.
+1. Give it an intent name of **SearchPic** and then click **Done**.
 
 Just as we did for Greetings, let's add some sample utterances (words/phrases/sentences the user might say when talking to the bot).  People might search for pictures in many ways.  Feel free to use some of the utterances below, and add your own wording for how you would ask a bot to search for pictures.
 
@@ -207,7 +207,7 @@ We're now ready to train our model. In this exercise, you will perform a simple 
 
    | Utterance | Result | Score meaning |
    |---------|---------|---------|
-   | **Show me pictures of a local beach** | Returns the **SearchPics** intent with a score | Positive match |
+   | **Show me pictures of a local beach** | Returns the **SearchPic** intent with a score | Positive match |
    | **Hello** | Returns the **Greeting** intent with a score | Fairly positive match |
    | **Send to Tom** | Returns the **Utilities** with a low score | Needs retraining or doesn't match any intents |
 
