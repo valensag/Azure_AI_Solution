@@ -65,7 +65,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Select **Create**
 
-1. Navigate to the new resource, select **Quick Start**
+1. Navigate to the new resource, under the **Resource Management** section in the left toolbar, select **Keys and Endpoints**
 
 1. Copy the **API Key** and the **url of the endpoint** to your notepad
 
