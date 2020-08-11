@@ -89,7 +89,7 @@ namespace PictureBot.Bots
 
             // Add instance of LUIS Recognizer
 
-            _logger = loggerFactory.CreateLogger<PictureBot>();
+            _logger = loggerFactory.CreateLogger<PictureBot.Bots.PictureBot>();
             _logger.LogTrace("PictureBot turn start.");
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
 
