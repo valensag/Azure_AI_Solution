@@ -177,10 +177,10 @@ We will implement the main processing and storage code as a command-line/console
 > **Note** the url for cognitive services should end with **/vision/v1.0** for the project oxford apis.  For example `https://westus2.api.cognitive.microsoft.com/vision/v1.0`.	
 
 1. If you have not already done so, compile the project	
-1. Open a command prompt and navigate to the build directory for the **TestCLI** project.  It should something like **{GitHubDir}\Lab2-Implement_Computer_Vision\code\Starter\TestCLI**.
+1. Open a command prompt and navigate to the build directory for the **TestCLI** project.  It should something like **{GitHubDir}\Lab2-Implement_Computer_Vision\code\Finished\TestCLI**.
 
 > **NOTE** Do not navigate to the debug directory	
-
+> **NOTE** .net core 2.2 is requred installation can be find here https://dotnet.microsoft.com/download/dotnet-core/2.2 
 1. Run command **dotnet run**	
 ```cmd	
 Usage:  [options]	
