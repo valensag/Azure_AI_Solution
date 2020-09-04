@@ -18,7 +18,7 @@ If you have been given an Azure Pass to complete this lab, you may go to [http:/
 
 ### Environment Setup
 
-These labs are intended to be used with the .NET Framework using [Visual Studio 2019](https://www.visualstudio.com/downloads/).  The original workshop was designed to be used, and was tested with, the Azure Data Science Virtual Machine (DSVM).  Only premium Azure subscriptions can actually create a DSVM resource on Azure but the labs can be completed with a local computer running Visual Studio 2019 and the required software downloads listed throughout the lab steps.
+These labs are intended to be used with the .NET Framework using [Visual Studio 2019](https://www.visualstudio.com/downloads/) runnning on a Microsoft Windows operating system. While there is a version of Visual Studio for Mac OS, certain features in the sample code are not supported on the Mac OS platform.  As a result, there is a hosted lab option available using a virtual machine solution. Your instructor will have the details on using the VM solution.  The original workshop was designed to be used, and was tested with, the Azure Data Science Virtual Machine (DSVM).  Only premium Azure subscriptions can actually create a DSVM resource on Azure but the labs can be completed with a local computer running Visual Studio 2019 and the required software downloads listed throughout the lab steps.
 
 ### Urls and Keys Needed
 
