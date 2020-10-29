@@ -63,7 +63,13 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Check the confirmation checkbox
 
-1. Select **Create**
+    >[!Note]
+    >Microsoft updates the Azure portal and services on a regular basis.  These steps contained the appropriate items at the time of writing but options and dialogs may 
+    differ if changes are made to Azure.  Check with your instructor for any anomalies that you may encounter.
+
+1. Select **Review + create**
+
+1. Once validation passes, select **Create**
 
 1. Navigate to the new resource, under the **Resource Management** section in the left toolbar, select **Keys and Endpoints**
 
@@ -79,7 +85,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Select your subscription and resource group
 
-1. Type a unique name for your account
+1. Type a name for your account, using your initials to make it unbique. **ai100storagego**
 
 1. For the location, select the same as your resource group
 
@@ -93,7 +99,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Select **Review + create**
 
-1. Select**Create**
+1. Select **Create**
 
 1. Navigate to the new resource, select **Access Keys**
 
@@ -103,7 +109,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Select **Overview**, then select **Containers**
 
-    ![The overview and containers links are highlighted](../images/lab01-storageaccountcontainers.png 'Open the storage account containers')
+    ![The overview and containers links are highlighted](../images/new-container.png 'Open the storage account containers')
 
 1. Select **+ Container**
 
@@ -111,7 +117,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
     ![The container button is highlighted and the container name is populated.  The OK button is also highlighted.](../images/lab01-storageaccountcontainercreate.png 'Create a container called images')
 
-1. Select **OK**
+1. Select **Create**
 
 #### Cosmos DB
 
