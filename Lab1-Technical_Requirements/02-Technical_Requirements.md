@@ -110,12 +110,13 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 1. Select **Overview**, then select **Containers**
 
     ![The overview and containers links are highlighted](../images/new-container.png 'Open the storage account containers')
+    ![The overview and containers links are highlighted](../images/new-container.png 'Open the storage account containers')
 
 1. Select **+ Container**
 
 1. For the name, type **images**
 
-    ![The container button is highlighted and the container name is populated.  The OK button is also highlighted.](../images/lab01-storageaccountcontainercreate.png 'Create a container called images')
+    ![The container button is highlighted and the container name is populated.  The OK button is also highlighted.](../images/new-container.png 'Create a container called images')
 
 1. Select **Create**
 
