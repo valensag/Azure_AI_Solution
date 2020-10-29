@@ -96,7 +96,7 @@ IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobConnec
 
 1. Click **Containers**, then open the **ChatLog** container
 
-1. Select the chat log file, it should start with **emulator...**, then select **Edit blob**.  What do you see in the files? What don't you see that you were expecting/hoping to see?
+1. Select the chat log file, it should start with **emulator...**, then select **Edit**.  What do you see in the files? What don't you see that you were expecting/hoping to see?
 
 You should see something similar to this:
 
