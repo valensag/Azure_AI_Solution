@@ -109,8 +109,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Select **Overview**, then select **Containers**
 
-    ![The overview and containers links are highlighted](../images/new-container.png 'Open the storage account containers')
-    ![The overview and containers links are highlighted](../images/new-container.png 'Open the storage account containers')
+    ![The overview and containers links are highlighted](../images/lab01-storageaccountcontainers.png 'Open the storage account containers')
 
 1. Select **+ Container**
 
