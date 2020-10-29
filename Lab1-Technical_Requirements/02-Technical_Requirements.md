@@ -131,11 +131,13 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. Select your subscription and resource group
 
-1. Type a unique account name
+1. Type a unique account name such as **ai100cosmosdbgo**
 
 1. Select a location that matches your resource group
 
-    ![The cosmosdb creation details are populated.](../images/lab01-cosmoscreate.png 'Create a cosmosdb resource')
+    ![The cosmosdb creation details are populated.](../images/cosmosdb.png 'Create a cosmosdb resource')
+
+1. Configure the remaining options as depicted in the above image
 
 1. Select **Review + create**
 
