@@ -78,7 +78,7 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. Open **Visual Studio 2019** or later
 
-1. Select **Create new project**, search for **bot**.
+1. Select **Create new project**, search for **Echo**.
 
 1. Scroll down until you see **Echo Bot (Bot Framework v4)**
 
@@ -91,7 +91,7 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 > **Note** If you do not see the Echo Bot template, you need to install the Visual Studio add-in from the pre-req steps.
 
-1. For the name, type **PictureBot**, select **Create**
+1. For the name, type **PictureBotProj**, select **Create**
 
 1. Spend some time looking at all of the different things that are generated from the Echo Bot template. We won't spend time explaining every single file, but we **highly recommend** spending some time **later** working through and reviewing this sample (and the other Web App Bot sample - Basic Bot), if you have not already. It contains important and useful shells needed for bot development. You can find it and other useful shells and samples [here](https://github.com/Microsoft/BotBuilder-Samples).
 
@@ -114,7 +114,9 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. Right-click the project, select **Manage Nuget Packagaes**
 
-1. Select the **Browse** tab, and install the following packages, ensure that you are using version **4.6.3**:
+1. Select the **Browse** tab, and install the following packages, ensure that you are using version **4.6.3**:  This is accomplished by single-clicking the entry in the left pane and then using the drop-down in the right to select the correct version.
+
+![Select version of the NuGet package](../images/package-version.png)
 
 * Microsoft.Bot.Builder.Azure
 * Microsoft.Bot.Builder.AI.Luis
