@@ -40,19 +40,19 @@ Creating a LUIS service in the portal is optional. However, if you want to see h
 
 1. Select **Create**
 
+1. Select your **Subscription** and **Resource group**
+
 1. For the name, type **{YOURINIT}luisbot**
 
-1. Select your subscription and and location similar to your resource group
+1. For the **Authoring Resource** location, select a location closest to you.  Not all locations are available for this resource.
 
-1. For the pricing tier, select **F0**
+1. For the pricing tier, select **Free F0**
 
-1. Select your resources group
+1. For your **Prediction Resource** location, set the option that is the same as your resource group location
 
-1. For the runtime location, select a location similar to your resource group
+1. For the **Prediction pricingtier**, select **Free F0**
 
-1. For the runtime pricing, select **F0**
-
-1. Select **Create**
+1. Select **Review + Create** and then **Create**
 
 **Note** The Luis AI web site does not allow you to control or publish your Azure based cognitive services resources.  You will need to call the APIs in order to train and publish them.
 
@@ -77,9 +77,13 @@ Let's look at how we can use LUIS to add some natural language capabilities. LUI
 
 > **Note**: Notice that there is also an "Import App" next to the "New App" button on [the current page](https://www.luis.ai/applications).  After creating your LUIS application, you have the ability to export the entire app as JSON and check it into source control.  This is a recommended best practice, so you can version your LUIS models as you version your code.  An exported LUIS app may be re-imported using that "Import App" button.  If you fall behind during the lab and want to cheat, you can select the "Import App" button and import the [LUIS model](./code/LUIS/PictureBotLuisModel.json).
 
-1. From the main page, select the **Create new app** button
+1. From the main page, select the **+ New app** button
 
-1. Type a name, and select **Done**.  Close the "How to create an effective LUIS app" dialog.
+1. Type a name for your app using similar convention used in the labs of the course.
+
+1. Select a **Culture** and your **Prediction resource**
+
+1. select **Done**.  Close the "How to create an effective LUIS app" dialog.
 
 ![LUIS New App](../images//LuisNewApp.png)
 
@@ -96,7 +100,7 @@ We want our bot to be able to do the following things:
 
 Let's create intents for the user requesting each of these.  
 
-1. Select the **Create new intent** button.
+1. Select the **+ Create** button.
 
 1. Name the first intent **Greeting** and select **Done**.  
 
@@ -116,7 +120,7 @@ Let's see how to create an entity.  When the user requests to search the picture
 
 ![Adding an entity named facet, of type Simple](../images/select-facet.png)
 
-1. Select **Intents** in the left-hand sidebar and then click the **Create new intent** button.  
+1. Select **Intents** in the left-hand sidebar and then click the **+ Create** button.  
 
 1. Give it an intent name of **SearchPic** and then click **Done**.
 
@@ -178,17 +182,13 @@ We're now ready to train our model. In this exercise, you will perform a simple 
     > [!NOTE]
     > The categories on the left pane may change as the portals are updated.  As a result, the keys and endpoints may fall under a different category than the one listed here.
 
+    - **Settings**
     - **Publish settings**
     - **Azure Resources**
     - **Versions**
-    - **Collaborators**
 
 1. Select **Azure Resources**. This screen is used to manage the URL endpoints used to access the LUIS service.
-
-    > [!NOTE]
-    > An endpoint named **Starter_Key** is automatically created for testing purposes, and you could use that here - however to use the service in a production environment or inside of an application, you will always want to tie it to a real Language Understanding resource created in Azure.
-
-1. You should see a **Prediction Resource** and a **Starter_Key** resource already created.  If you see the **Prediction Resource**, advance to the next section on **Publish the app**.
+1. You should see a **Prediction Resource** and a **Key** resource already created.  If you see the **Prediction Resource**, advance to the next section on **Publish the app**.
 1. If you do not see an existing **Prediction Resource**, select **Add prediction resource**. The **Tenant** will already be selected.
 1. Select your subscription, and the resource you created in the Azure portal earlier and then select **Done** to connect the Language Understanding resource to the LUIS service.
 
@@ -214,7 +214,7 @@ We're now ready to train our model. In this exercise, you will perform a simple 
 To retrain the model for utterances with low scores, take the following steps:
 
 1. Beside the low-scoring utterance (in this case, **Send to Tom**), select **Inspect**.
-1. Beside **Top-scoring intent**, select the drop-down and choose **SharePic** from the list.
+1. Beside **Top-scoring intent**, select **Assign to new intent** and then in the drop-down and choose **SharePic** from the list.
 1. Close the **Test** panel.
 1. Select the **Train** button to retrain your model.
 1. Test the **Send to Tom** utterance again. It should now return the **SharePic** intent with a higher score.
