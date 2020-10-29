@@ -232,20 +232,27 @@ Middleware is simply a class or set of classes that sit between the adapter and 
 
 The SDK allows you to write your own middleware or add reusable components of middleware created by others. Every activity coming in or out of your bot flows through your middleware. We'll get deeper into this later in the lab, but for now, it's important to understand that every activity flows through your middleware, because it is located in the `ConfigureServices` method that gets called at run time (which runs in between every message being sent by a user and `OnMessageActivityAsync`).
 
-1. Add a new folder called **Middleware**
+1. Add a new folder called **Middleware** by right-clicking the project name, in Solution Explorer, and selecting **Add** and then **New Folder**
 
 1. Right-click on the **Middleware** folder and select **Add>Existing Item**.
 
 1. Navigate to **{GitHubDir}\Lab3-Basic_Filter_Bot\code\Middleware**, select all three files, and select **Add**
 
-1. Add the following variables to your **Startup** class:
+1. Add the following variables to your **Startup.cs** class file directly under the 
+
+```csharp 
+public class Startup 
+{ 
+``` 
+
+line of code. (line 32 in the code file):
 
 ```csharp
 private ILoggerFactory _loggerFactory;
 private bool _isProduction = false;
 ```
 
-1. Replace the following code in the **ConfigureServices** method:
+1. Replace the following code in the **public void ConfigurationServices(IServiceCollection services)** method:
 
 ```csharp
 services.AddTransient<IBot, PictureBot.Bots.PictureBot>();
@@ -305,7 +312,7 @@ services.AddBot<PictureBot.Bots.PictureBot>(options =>
 });
 ```
 
-1. Replace the **Configure** method with the following code:
+1. Replace the **public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)** method with the following code:
 
 ```csharp
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -339,7 +346,7 @@ For each accessor we create, we have to first give it a property name. For our s
 
 We can use these constructs to keep track of what we'll call `PictureState`.
 
-1. In the **ConfigureServices** method of the **Startup.cs** file, add the `PictureState` within the list of custom state accessors and to keep track of the dialogs, you'll use the built-in `DialogState`:
+1. In the **ConfigureServices** method of the **Startup.cs** file, add the following line of code `PictureState = conversationState.CreateProperty<PictureState>(PictureBotAccessors.PictureStateName),` within the list of custom state accessors and to keep track of the dialogs, you'll use the built-in `DialogState`:
 
 ```csharp
 // Create and register state accesssors.
