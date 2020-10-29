@@ -28,7 +28,7 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. For the name, you'll have to create a unique identifier. We recommend using something along the lines of PictureBot[i][n] where [i] is your initials and [n] is a number (e.g. mine would be PictureBotamt6).
 
-1. Select a region
+1. Select a **Location**
 
 1. For pricing tier, select **F0 (10K Premium Message)**.
 
