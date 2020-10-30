@@ -7,21 +7,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using PictureBot.Models;
 using PictureBot.Responses;
 using Microsoft.Bot.Builder.AI.Luis;
-using Microsoft.Azure.Search;
-using Microsoft.Azure.Search.Models;
-using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Microsoft.PictureBot;
-using System.Collections.Generic;
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics;
+using Azure.AI.TextAnalytics;
 
 namespace PictureBot.Bots
 {
@@ -56,18 +47,18 @@ namespace PictureBot.Bots
                 await _accessors.ConversationState.SaveChangesAsync(turnContext);
 
                 //Check the language
-                var result = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
+                DetectedLanguage detectedLanguage = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
                 
-                switch (result.DetectedLanguages[0].Name)
+                switch (detectedLanguage.Name)
                 {
                     case "English":
                         break;
                     default:
                         //throw error
-                        await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{result.DetectedLanguages[0].Name}]");
+                        await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{detectedLanguage.Name}]");
                         break;
                 }
-                
+               
                 // Establish dialog context from the conversation state.
                 var dc = await _dialogs.CreateContextAsync(turnContext);
                 // Continue any current dialog.
@@ -83,7 +74,7 @@ namespace PictureBot.Bots
             }
         }
 
-        public PictureBot(PictureBotAccessors accessors, ILoggerFactory loggerFactory,LuisRecognizer recognizer, TextAnalyticsClient analyticsClient)
+        public PictureBot(PictureBotAccessors accessors, ILoggerFactory loggerFactory, LuisRecognizer recognizer, TextAnalyticsClient analyticsClient)
         {
             if (loggerFactory == null)
             {
