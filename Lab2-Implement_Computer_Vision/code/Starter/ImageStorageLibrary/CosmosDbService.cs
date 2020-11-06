@@ -10,16 +10,16 @@ using Microsoft.Extensions.Configuration;
 namespace ImageStorageLibrary
 {
 
-    public interface ICosmosDbService<T> where T : class
+    public interface ICosmosDbService<R> where R : class
     {
-        Task<IEnumerable<T>> GetItemsAsync(string query, string paramter = null, string parametervalue = null);
+        Task<IEnumerable<R>> GetItemsAsync(string query, QueryRequestOptions options);
         Task<T> GetItemAsync<T>(string id);
         Task AddItemAsync<T>(T item);
         Task UpdateItemAsync<T>(string id, T item);
         Task DeleteItemAsync(string id);
     }
 
-    public class CosmosDbService<T> : ICosmosDbService<T> where T : class
+    public class CosmosDbService<R> : ICosmosDbService<R> where R : class
     {
         private Container _container;
 
@@ -39,7 +39,7 @@ namespace ImageStorageLibrary
 
         public async Task DeleteItemAsync(string id)
         {
-            await this._container.DeleteItemAsync<T>(id, new PartitionKey(id));
+            await this._container.DeleteItemAsync<R>(id, new PartitionKey(id));
         }
 
         public async Task<T> GetItemAsync<T>(string id)
@@ -56,7 +56,7 @@ namespace ImageStorageLibrary
 
         }
 
-        public async Task<IEnumerable<T>> GetItemsAsync(string queryString, string paramter = null, string parametervalue = null)
+        public async Task<IEnumerable<R>> GetItemsAsync(string queryString, QueryRequestOptions options = null)
         {
             var query = this._container.GetItemQueryIterator<T>(new QueryDefinition(queryString).WithParameter(paramter, parametervalue));
             List<T> results = new List<T>();
@@ -86,7 +86,7 @@ namespace ImageStorageLibrary
 
         public async Task UpdateItemAsync<T>(string id, T item)
         {
-            await this._container.UpsertItemAsync<T>(item, new PartitionKey(id));
+            await this._container.UpsertItemAsync(item, new PartitionKey(id));
         }
 
     }

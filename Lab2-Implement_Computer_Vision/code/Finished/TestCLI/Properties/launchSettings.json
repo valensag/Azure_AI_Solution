@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TestCLI": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-process C:\\temp\\media"
     }
   }
 }
