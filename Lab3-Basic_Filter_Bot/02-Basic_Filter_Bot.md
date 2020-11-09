@@ -83,7 +83,7 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 1. Scroll down until you see **Echo Bot (Bot Framework v4)**
 
 >[!CAUTION]
->Depending on the version of Visual Studio installed, the below screenshot may be different from your own.  If you see multiple versions listed for the Echo Bot template, choose version 3.1 and not version 2.1.
+>Depending on the version of Visual Studio installed, the below screenshot may be different from your own.  If you see multiple versions listed for the Echo Bot template, choose **version 3.1** and not version 2.1.
 
 ![Select the Echo Bot project template](../images/NewBotProject.png)
 
@@ -114,12 +114,13 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. Right-click the project, select **Manage Nuget Packagaes**
 
-1. Select the **Browse** tab, and install the following packages, ensure that you are using version **4.6.3**:
+1. Select the **Browse** tab, and install the following packages, ensure that you are using latest version:
 
-* Microsoft.Bot.Builder.Azure
-* Microsoft.Bot.Builder.AI.Luis
-* Microsoft.Bot.Builder.Dialogs
-* Microsoft.Azure.Search (version, 10.1.0 or later)
+    * Microsoft.Bot.Builder.Azure.Blobs
+    * Microsoft.Bot.Builder.AI.Luis
+    * Microsoft.Bot.Builder.Dialogs
+    * Microsoft.Bot.Builder.Integration.AspNet.Core
+    * Azure.AI.TextAnalytics
 
 1. Build the solution.
 
@@ -203,10 +204,11 @@ using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.PictureBot;
+using PictureBot.Bots;
 
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Azure.Blobs;
 ```
 
 We won't use all of the above namespaces just yet, but can you guess when we might?
@@ -240,7 +242,6 @@ The SDK allows you to write your own middleware or add reusable components of mi
 
 ```csharp
 private ILoggerFactory _loggerFactory;
-private bool _isProduction = false;
 ```
 
 1. Replace the following code in the **ConfigureServices** method:
@@ -269,33 +270,6 @@ services.AddBot<PictureBot.Bots.PictureBot>(options =>
         await context.SendActivityAsync("Sorry, it looks like something went wrong.");
     };
 
-    // The Memory Storage used here is for local bot debugging only. When the bot
-    // is restarted, everything stored in memory will be gone.
-    IStorage dataStore = new MemoryStorage();
-
-    // For production bots use the Azure Blob or
-    // Azure CosmosDB storage providers. For the Azure
-    // based storage providers, add the Microsoft.Bot.Builder.Azure
-    // Nuget package to your solution. That package is found at:
-    // https://www.nuget.org/packages/Microsoft.Bot.Builder.Azure/
-    // Uncomment the following lines to use Azure Blob Storage
-    // //Storage configuration name or ID from the .bot file.
-    // const string StorageConfigurationId = "<STORAGE-NAME-OR-ID-FROM-BOT-FILE>";
-    // var blobConfig = botConfig.FindServiceByNameOrId(StorageConfigurationId);
-    // if (!(blobConfig is BlobStorageService blobStorageConfig))
-    // {
-    //    throw new InvalidOperationException($"The .bot file does not contain an blob storage with name '{StorageConfigurationId}'.");
-    // }
-    // // Default container name.
-    // const string DefaultBotContainer = "botstate";
-    // var storageContainer = string.IsNullOrWhiteSpace(blobStorageConfig.Container) ? DefaultBotContainer : blobStorageConfig.Container;
-    // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobStorageConfig.ConnectionString, storageContainer);
-
-    // Create Conversation State object.
-    // The Conversation State object is where we persist anything at the conversation-scope.
-    var conversationState = new ConversationState(dataStore);
-
-    options.State.Add(conversationState);
 
     var middleware = options.Middleware;
     // Add middleware below with "middleware.Add(...."
@@ -306,15 +280,20 @@ services.AddBot<PictureBot.Bots.PictureBot>(options =>
 1. Replace the **Configure** method with the following code:
 
 ```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 {
     _loggerFactory = loggerFactory;
 
     app.UseDefaultFiles()
-        .UseStaticFiles()
-        .UseBotFramework();
-
-    app.UseMvc();
+                .UseBotFramework()
+                .UseStaticFiles()
+                .UseWebSockets()
+                .UseRouting()
+                .UseAuthorization()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
 }
 ```
 
@@ -350,7 +329,9 @@ services.AddSingleton<PictureBotAccessors>(sp =>
         throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the state accessors");
     }
 
-    var conversationState = options.State.OfType<ConversationState>().FirstOrDefault();
+    var conversationState = sp.GetRequiredService<ConversationState>();
+    //var conversationState = services.BuildServiceProvider().GetService<ConversationState>();
+
     if (conversationState == null)
     {
         throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
@@ -358,14 +339,13 @@ services.AddSingleton<PictureBotAccessors>(sp =>
 
     // Create the custom state accessor.
     // State accessors enable other components to read and write individual properties of state.
-    var accessors = new PictureBotAccessors(conversationState)
+    return new PictureBotAccessors(conversationState)
     {
         PictureState = conversationState.CreateProperty<PictureState>(PictureBotAccessors.PictureStateName),
         DialogStateAccessor = conversationState.CreateProperty<DialogState>("DialogState"),
     };
 
-    return accessors;
-});
+ });
 ```
 
 You should see an error (red squiggly) beneath some of the terms. But before fixing them, you may be wondering why we had to create two accessors, why wasn't one enough?
@@ -649,7 +629,7 @@ namespace PictureBot.Responses
     {
         public static async Task ReplyWithGreeting(ITurnContext context)
         {
-            // Add a greeting
+            await context.SendActivityAsync("Hello, Im a Picture Bot");
         }
         public static async Task ReplyWithHelp(ITurnContext context)
         {
@@ -663,6 +643,7 @@ namespace PictureBot.Responses
         {
             // Add a response for the user if Regex or LUIS doesn't know
             // What the user is trying to communicate
+            await context.SendActivityAsync($"I'm sorry, I don't understand.");
         }
         public static async Task ReplyWithLuisScore(ITurnContext context, string key, double score)
         {
@@ -759,39 +740,27 @@ var conversationState = new ConversationState(dataStore);
 
 options.State.Add(conversationState);
 ```
-
-1. Replace it with
+1. Add following code in the bottom of the `ConfigureServices`
 
 ```csharp
-var userState = new UserState(dataStore);
-var conversationState = new ConversationState(dataStore);
-
 // Create the User state.
-services.AddSingleton<UserState>(userState);
+services.AddSingleton<UserState>(sp => {
+    var dataStore = sp.GetRequiredService<IStorage>();
+        return new UserState(dataStore);
+});
 
 // Create the Conversation state.
-services.AddSingleton<ConversationState>(conversationState);
-```
-
-1. Also replace the `ConfigureServices` code to now pull from the dependency injection version:
-
-```csharp
-var conversationState = options.State.OfType<ConversationState>().FirstOrDefault();
-if (conversationState == null)
+services.AddSingleton<ConversationState>(sp =>
 {
-    throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
-}
-```
+    var dataStore = sp.GetRequiredService<IStorage>();
+    return new ConversationState(dataStore);
+});
 
-1. Replace it with
-
-```csharp
-var conversationState = services.BuildServiceProvider().GetService<ConversationState>();
-
-if (conversationState == null)
+// Create the IStorage.
+services.AddSingleton<IStorage, MemoryStorage>(sp =>
 {
-    throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
-}
+    return new MemoryStorage();
+});
 ```
 
 Without adding LUIS, our bot is really only going to pick up on a few variations, but it should capture a good bit of messages, if the users are using the bot for searching and sharing and ordering pictures.
@@ -804,7 +773,21 @@ Without adding LUIS, our bot is really only going to pick up on a few variations
 
 Let's get down to business. We need to fill out MainDialog within PictureBot.cs so that our bot can react to what users say they want to do.  Based on our results from Regex, we need to direct the conversation in the right direction. Read the code carefully to confirm you understand what it's doing.
 
-1. In **PictureBot.cs**, add the following by pasting in the following method code:
+1. In **PictureBot.cs**, add following namespaces to the top of the file
+
+```csharp
+using Microsoft.Bot.Schema;
+using Microsoft.PictureBot;
+using PictureBot.Responses;
+```
+
+1. Add following line to the top of the class.
+
+```csharp
+private readonly PictureBotAccessors _accessors;
+```
+
+1. Add the following method by pasting code:
 
 ```csharp
 // If we haven't greeted a user yet, we want to do that first, but for the rest of the
@@ -875,6 +858,28 @@ public async Task<DialogTurnResult> MainMenuAsync(WaterfallStepContext stepConte
     }
 }
 ```
+
+1. Find function `OnMessageActivityAsync` and replace with new function `OnTurnAsync`
+
+
+```csharp
+public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
+{
+        // Establish dialog context from the conversation state.
+        var dc = await _dialogs.CreateContextAsync(turnContext);
+        // Continue any current dialog.
+        var results = await dc.ContinueDialogAsync(cancellationToken);
+
+        // Every turn sends a response, so if no response was sent,
+        // then there no dialog is currently active.
+        if (!turnContext.Responded)
+        {
+            // Start the main dialog
+            await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
+        }            
+}
+```
+
 
 1. Press **F5** to run the bot.
 
