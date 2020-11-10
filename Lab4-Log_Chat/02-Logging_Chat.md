@@ -64,9 +64,21 @@ As you can see, our current implementation is using in-memory storage. Again, th
 1. Replace the current `IStorage` line with the following to change it to a FileStorage based persistance:
 
 ```csharp
-var blobConnectionString = Configuration.GetSection("BlobStorageConnectionString")?.Value;
-var blobContainer = Configuration.GetSection("BlobStorageContainer")?.Value;
-IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobConnectionString, blobContainer);
+  var blobConnectionString = Configuration.GetSection("BlobStorageConnectionString")?.Value;
+  var blobContainer = Configuration.GetSection("BlobStorageContainer")?.Value;
+  BlobsStorage dataStore = new BlobsStorage(blobConnectionString, blobContainer);
+  return dataStore;
+```
+
+1. You also need to fix singleton definition from
+
+```csharp
+services.AddSingleton<IStorage, MemoryStorage>(sp =>
+```
+to
+
+```csharp
+services.AddSingleton<IStorage, BlobsStorage>(sp =>
 ```
 
 1. Switch to the Azure Portal, navigate to your blob storage account
@@ -117,7 +129,8 @@ We can do this by updating what we're storing in our `UserData` object in the **
 ```csharp
 public class PictureState
 {
-    public string Greeted { get; set; } = "not greeted";
+    private readonly PictureBotAccessors _accessors;
+    private DialogSet _dialogs;
 ```
 
 add:
@@ -135,22 +148,26 @@ In this example we're choosing to use the state manager to read and write data, 
 
 The final thing we have to do before we run the bot is add messages to our list with our `OnTurn` action.
 
+1. In **PictureState.cs** add the new field after `Searching` declaration
+
+```csharp
+    public List<string> UtteranceList { get; private set; } = new List<string>();
+```
+
 1. In **PictureBot.cs**, **after** the following code:
 
 ```csharp
 public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (turnContext.Activity.Type is "message")
-            {
+{
 ```
 
 add:
 
 ```csharp
-var utterance = turnContext.Activity.Text;
-var state = await _accessors.PictureState.GetAsync(turnContext, () => new PictureState());
-state.UtteranceList.Add(utterance);
-await _accessors.ConversationState.SaveChangesAsync(turnContext);
+      var utterance = turnContext.Activity.Text;
+      var state = await _accessors.PictureState.GetAsync(turnContext, () => new PictureState());
+      state.UtteranceList.Add(utterance);
+      await _accessors.ConversationState.SaveChangesAsync(turnContext);
 ```
 
 > **Note** We have to save the state if we modify it
