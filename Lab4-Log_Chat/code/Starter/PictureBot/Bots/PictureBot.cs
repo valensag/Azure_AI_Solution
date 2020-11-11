@@ -52,17 +52,20 @@ namespace PictureBot.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
-            // Establish dialog context from the conversation state.
-            var dc = await _dialogs.CreateContextAsync(turnContext);
-            // Continue any current dialog.
-            var results = await dc.ContinueDialogAsync(cancellationToken);
-
-            // Every turn sends a response, so if no response was sent,
-            // then there no dialog is currently active.
-            if (!turnContext.Responded)
+            if (turnContext.Activity.Type is "message")
             {
-                // Start the main dialog
-                await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
+                // Establish dialog context from the conversation state.
+                var dc = await _dialogs.CreateContextAsync(turnContext);
+                // Continue any current dialog.
+                var results = await dc.ContinueDialogAsync(cancellationToken);
+
+                // Every turn sends a response, so if no response was sent,
+                // then there no dialog is currently active.
+                if (!turnContext.Responded)
+                {
+                    // Start the main dialog
+                    await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
+                }
             }
         }
 

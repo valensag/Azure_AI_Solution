@@ -23,34 +23,27 @@ In this lab we are going to integrate language detection ability of cognitive se
 1. Open the **Startup.cs** file, add the following using statements:
 
 ```csharp
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics;
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
-using Microsoft.Azure.CognitiveServices.Language.LUIS.Runtime;
+using Azure.AI.TextAnalytics;
+using Azure;
 ```
 
 1. Add the following code to the **ConfigureServices** method:
 
 ```csharp
-services.AddSingleton(sp =>
+services.AddSingleton<TextAnalyticsClient>(sp =>
 {
-    string cogsBaseUrl = Configuration.GetSection("cogsBaseUrl")?.Value;
+    Uri cogsBaseUrl = new Uri(Configuration.GetSection("cogsBaseUrl")?.Value);
     string cogsKey = Configuration.GetSection("cogsKey")?.Value;
 
-    var credentials = new ApiKeyServiceClientCredentials(cogsKey);
-    TextAnalyticsClient client = new TextAnalyticsClient(credentials)
-    {
-        Endpoint = cogsBaseUrl
-    };
-
-    return client;
+    var credentials = new AzureKeyCredential(cogsKey);
+    return new TextAnalyticsClient(cogsBaseUrl, credentials);
 });
 ```
 
 1. Open the **PictureBot.cs** file, add the following using statements:
 
 ```csharp
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics;
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
+using Azure.AI.TextAnalytics;
 ```
 
 1. Add the following class variable:
@@ -59,10 +52,10 @@ using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
 private TextAnalyticsClient _textAnalyticsClient;
 ```
 
-1. Modify the constructor to include the new TextAnalyticsClient:
+1. Modify the constructor to include the new `TextAnalyticsClient`:
 
 ```csharp
-public PictureBot(PictureBotAccessors accessors, ILoggerFactory loggerFactory,LuisRecognizer recognizer, TextAnalyticsClient analyticsClient)
+public PictureBot(PictureBotAccessors accessors, LuisRecognizer recognizer, TextAnalyticsClient analyticsClient)
 ```
 
 1. Inside the constructor, initialize the class variable:
@@ -84,18 +77,16 @@ await _accessors.ConversationState.SaveChangesAsync(turnContext);
 
 ```csharp
 //Check the language
-var result = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text, "us");
-
-switch (result.DetectedLanguages[0].Name)
-{
-    case "English":
-        break;
-    default:
-        //throw error
-        await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{result.DetectedLanguages[0].Name}]");
-        return;
-        break;
-}
+    DetectedLanguage detectedLanguage = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
+    switch (detectedLanguage.Name)
+    {
+        case "English":
+            break;
+        default:
+            //throw error
+            await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{detectedLanguage.Name}]");
+            break;
+    }
 ```
 
 1. Open the **appsettings.json** file and ensure that your cognitive services settings are entered:

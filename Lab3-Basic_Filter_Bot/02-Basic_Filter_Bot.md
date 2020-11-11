@@ -865,6 +865,8 @@ public async Task<DialogTurnResult> MainMenuAsync(WaterfallStepContext stepConte
 ```csharp
 public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
 {
+    if (turnContext.Activity.Type is "message")
+    {
         // Establish dialog context from the conversation state.
         var dc = await _dialogs.CreateContextAsync(turnContext);
         // Continue any current dialog.
@@ -876,7 +878,8 @@ public override async Task OnTurnAsync(ITurnContext turnContext, CancellationTok
         {
             // Start the main dialog
             await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
-        }            
+        }  
+    }          
 }
 ```
 

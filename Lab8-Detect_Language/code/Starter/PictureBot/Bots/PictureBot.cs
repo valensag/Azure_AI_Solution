@@ -3,10 +3,12 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.10.3
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.PictureBot;
@@ -17,13 +19,16 @@ namespace PictureBot.Bots
     public class PictureBot : ActivityHandler
     {
         private readonly PictureBotAccessors _accessors;
+        private LuisRecognizer _recognizer { get; } = null;
         private DialogSet _dialogs;
         // A list of things that users have said to the bot
         public List<string> UtteranceList { get; private set; } = new List<string>();
 
 
-        public PictureBot(PictureBotAccessors accessors)
+        public PictureBot(PictureBotAccessors accessors, LuisRecognizer recognizer)
         {
+            _recognizer = recognizer ?? throw new ArgumentNullException(nameof(recognizer));
+
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
 
             // The DialogSet needs a DialogState accessor, it will call it when it has a turn context.
@@ -150,10 +155,43 @@ namespace PictureBot.Bots
                     return await stepContext.EndDialogAsync();
                 default:
                     {
-                        await MainResponses.ReplyWithConfused(stepContext.Context);
+                        // Call LUIS recognizer
+                        var result = await _recognizer.RecognizeAsync(stepContext.Context, cancellationToken);
+                        // Get the top intent from the results
+                        var topIntent = result?.GetTopScoringIntent();
+                        // Based on the intent, switch the conversation, similar concept as with Regex above
+                        switch ((topIntent != null) ? topIntent.Value.intent : null)
+                        {
+                            case null:
+                                // Add app logic when there is no result.
+                                await MainResponses.ReplyWithConfused(stepContext.Context);
+                                break;
+                            case "None":
+                                await MainResponses.ReplyWithConfused(stepContext.Context);
+                                // with each statement, we're adding the LuisScore, purely to test, so we know whether LUIS was called or not
+                                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                                break;
+                            case "Greeting":
+                                await MainResponses.ReplyWithGreeting(stepContext.Context);
+                                await MainResponses.ReplyWithHelp(stepContext.Context);
+                                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                                break;
+                            case "OrderPic":
+                                await MainResponses.ReplyWithOrderConfirmation(stepContext.Context);
+                                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                                break;
+                            case "SharePic":
+                                await MainResponses.ReplyWithShareConfirmation(stepContext.Context);
+                                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                                break;
+                            default:
+                                await MainResponses.ReplyWithConfused(stepContext.Context);
+                                break;
+                        }
                         return await stepContext.EndDialogAsync();
                     }
             }
+
         }
     }
 }
