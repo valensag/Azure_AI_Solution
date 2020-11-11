@@ -135,6 +135,26 @@ namespace PictureBot
                 };
             });
 
+
+            // Create and register a LUIS recognizer.
+            services.AddSingleton(sp =>
+            {
+                var luisApplication = new LuisApplication(
+                  Configuration.GetSection("luisAppId")?.Value,
+                  Configuration.GetSection("luisAppKey")?.Value,
+                  Configuration.GetSection("luisEndPoint")?.Value);
+                // Set the recognizer options depending on which endpoint version you want to use.
+                // More details can be found in https://docs.microsoft.com/en-gb/azure/cognitive-services/luis/luis-migration-api-v3
+                var recognizerOptions = new LuisRecognizerOptionsV3(luisApplication)
+                {
+                    PredictionOptions = new Microsoft.Bot.Builder.AI.LuisV3.LuisPredictionOptions
+                    {
+                        IncludeAllIntents = true,
+                    }
+                };
+                return new LuisRecognizer(recognizerOptions);
+            });
+
             // Create the User state.
             services.AddSingleton<UserState>(sp =>
             {
