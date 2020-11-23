@@ -156,6 +156,14 @@ default:
 }
 ```
 
+1. In the same method `MainMenuAsync` let's delete block of empty dialog to avoid confusion. Find following code and delete it:
+
+    ```csharp
+        case "search":
+            // switch to the search dialog
+            return await stepContext.BeginDialogAsync("searchDialog", null, cancellationToken);
+    ```
+
 Let's briefly go through what we're doing in the new code additions. First, instead of responding saying we don't understand, we're going to call LUIS. So we call LUIS using the LUIS Recognizer, and we store the Top Intent in a variable. We then use `switch` to respond in different ways, depending on which intent is picked up. This is almost identical to what we did with Regex.
 
 > **Note** If you named your intents differently in LUIS than instructed in the code accompanying [Lab 6](../Lab6-Implement_LUIS/02-Implement_LUIS.md), you need to modify the `case` statements accordingly.

@@ -168,9 +168,6 @@ namespace PictureBot.Bots
             // Based on the recognized intent, direct the conversation
             switch (recognizedIntents.TopIntent?.Name)
             {
-                case "search":
-                    // switch to the search dialog
-                    return await stepContext.BeginDialogAsync("searchDialog", null, cancellationToken);
                 case "share":
                     // respond that you're sharing the photo
                     await MainResponses.ReplyWithShareConfirmation(stepContext.Context);
