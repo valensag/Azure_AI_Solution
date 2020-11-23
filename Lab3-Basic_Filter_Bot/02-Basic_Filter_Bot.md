@@ -82,7 +82,7 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. Scroll down until you see **Echo Bot (Bot Framework v4)**
 
-    >[!CAUTION]
+    >**[!CAUTION]**
     >Depending on the version of Visual Studio installed, the below screenshot may be different from your own.  If you see multiple versions listed for the Echo Bot template, choose **version 3.1** and not version 2.1.
 
     ![Select the Echo Bot project template](../images/NewBotProject.png)
@@ -161,9 +161,7 @@ To interact with your bot:
 
 * Enter the url that is displayed on your bot web page
 
-* Enter the AppId and the App Secret your entered into the appsettings.json
-
->**Note** If you do not enter id and secret values into the bot settings you would also not need to enter the values in the bot emulator
+* Enter the AppId and the App Secret your entered into the `appsettings.json`
 
 * Select **Save and connect**, then save your .bot file locally
 
@@ -247,7 +245,7 @@ The SDK allows you to write your own middleware or add reusable components of mi
 1. Replace the following code in the **ConfigureServices** method:
 
     ```csharp
-    services.AddTransient<IBot, PictureBot.Bots.PictureBot>();
+    services.AddTransient<IBot, PictureBot>();
     ```
 
     with the following code:
@@ -480,22 +478,14 @@ Since we only have two dialogs, we can keep it simple and put them in the Pictur
 1. Navigate back to **PictureBot.cs** and replace your `using` statements with the following:
 
     ```csharp
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Bot.Builder;
-    using Microsoft.Bot.Schema;
     using Microsoft.Bot.Builder.Dialogs;
-    using Microsoft.Extensions.Logging;
-    using System.Linq;
-    using PictureBot.Models;
-    using PictureBot.Responses;
-    using Microsoft.Bot.Builder.AI.Luis;
-    using Microsoft.Azure.Search;
-    using Microsoft.Azure.Search.Models;
-    using System;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using Microsoft.Bot.Schema;
     using Microsoft.PictureBot;
+    using PictureBot.Responses;
     ```
 
 You've just added access to your Models/Responses, as well as to the services LUIS and Azure Cognitive Search. Finally, the Newtonsoft references will help you parse the responses from LUIS, which we will see in a subsequent lab.
