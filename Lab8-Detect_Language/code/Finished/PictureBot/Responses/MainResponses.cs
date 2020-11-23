@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 
 namespace PictureBot.Responses
@@ -34,6 +35,10 @@ namespace PictureBot.Responses
         public static async Task ReplyWithOrderConfirmation(ITurnContext context)
         {
             await context.SendActivityAsync($"Ordering standard prints of your picture(s)...");
+        }
+        public static async Task ReplyWithSearchConfirmation(ITurnContext context)
+        {
+            await context.SendActivityAsync($"Searching picture(s)...");
         }
     }
 }

@@ -48,28 +48,27 @@ namespace PictureBot.Bots
 
                 //Check the language
                 DetectedLanguage detectedLanguage = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
-                
+
                 switch (detectedLanguage.Name)
                 {
                     case "English":
+                        // Establish dialog context from the conversation state.
+                        var dc = await _dialogs.CreateContextAsync(turnContext);
+                        // Continue any current dialog.
+                        var results = await dc.ContinueDialogAsync(cancellationToken);
+
+                        // Every turn sends a response, so if no response was sent,
+                        // then there no dialog is currently active.
+                        if (!turnContext.Responded)
+                        {
+                            // Start the main dialog
+                            await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
+                        }
                         break;
                     default:
                         //throw error
                         await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{detectedLanguage.Name}]");
                         break;
-                }
-               
-                // Establish dialog context from the conversation state.
-                var dc = await _dialogs.CreateContextAsync(turnContext);
-                // Continue any current dialog.
-                var results = await dc.ContinueDialogAsync(cancellationToken);
-
-                // Every turn sends a response, so if no response was sent,
-                // then there no dialog is currently active.
-                if (!turnContext.Responded)
-                {
-                    // Start the main dialog
-                    await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
                 }
             }
         }
@@ -209,6 +208,10 @@ namespace PictureBot.Bots
                                 break;
                             case "SharePic":
                                 await MainResponses.ReplyWithShareConfirmation(stepContext.Context);
+                                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                                break;
+                            case "SearchPic":
+                                await MainResponses.ReplyWithSearchConfirmation(stepContext.Context);
                                 await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
                                 break;
                             default:

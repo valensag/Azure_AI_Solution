@@ -89,6 +89,46 @@ await _accessors.ConversationState.SaveChangesAsync(turnContext);
     }
 ```
 
+1. Everyting you have in the method after `switch` ends move to the `case "English"`. Finally your method should looks like following:
+
+    ```csharp
+    public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
+    {
+        if (turnContext.Activity.Type is "message")
+        {
+            var utterance = turnContext.Activity.Text;
+            var state = await _accessors.PictureState.GetAsync(turnContext,() => new PictureState());
+            state.UtteranceList.Add(utterance);
+            await _accessors.ConversationState.SaveChangesAsync(turnContext);
+
+            //Check the language
+            DetectedLanguage detectedLanguage = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
+            switch (detectedLanguage.Name)
+            {
+                    case "English":
+                        // Establish dialog context from the conversation state.
+                        var dc = await _dialogs.CreateContextAsync(turnContext);
+                        // Continue any current dialog.
+                        var results = await dc.ContinueDialogAsync(cancellationToken);
+
+                        // Every turn sends a response, so if no response was sent,
+                        // then there no dialog is currently active.
+                        if (!turnContext.Responded)
+                        {
+                            // Start the main dialog
+                            await dc.BeginDialogAsync("mainDialog", null, cancellationToken);
+                        }
+                        break;
+                    default:
+                        //throw error
+                        await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{detectedLanguage.Name}]");
+                        break;
+            }
+        }
+    }
+    ```
+
+
 1. Open the **appsettings.json** file and ensure that your cognitive services settings are entered:
 
 ```csharp
