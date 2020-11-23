@@ -68,7 +68,7 @@ namespace TestCLI
                 dynamic settings = new JsonSerializer().Deserialize(textReader);
 
                 VisionServiceHelper.Url = settings.CognitiveServicesKeys.Url;
-                VisionServiceHelper.ApiKey = settings.CognitiveServicesKeys.Vision;
+                VisionServiceHelper.ApiKey = settings.CognitiveServicesKeys.Key;
 
                 BlobStorageHelper.ConnectionString = settings.AzureStorage.ConnectionString;
                 BlobStorageHelper.ContainerName = settings.AzureStorage.BlobContainer;

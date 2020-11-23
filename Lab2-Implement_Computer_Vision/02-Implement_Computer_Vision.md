@@ -172,20 +172,20 @@ Cosmos DB is not a focus of this lab, but if you're interested in what's going o
 
     - Once all of that is complete, we can store our image - first the actual image into Blob Storage using our `BlobStorageHelper` instance, and then the `ImageMetadata` into Cosmos DB using our `CosmosDBHelper` instance. If the document already existed (based on our previous check), we should update the existing document. Otherwise, we should be creating a new one.	
 
-## Lab 2.6: Loading Images using TestCLI	
+## Lab 2.6: Loading Images Using TestCLI	
 
 We will implement the main processing and storage code as a command-line/console application because this allows you to concentrate on the processing code without having to worry about event loops, forms, or any other UX related distractions. Feel free to add your own UX later.	
 1. In the **TestCLI** project, open the **settings.json** file	
 1. Add your specific environment settings from [Lab1-Technical_Requirements.md](../Lab1-Technical_Requirements/02-Technical_Requirements.md)	
 
     > **Note** the url for cognitive services should end with **/vision/v1.0** for the project oxford apis.  For example 'ENDPOINT/vision/v1.0`.
-    > ENDPOINT url can be found in your created ComputerVision blade "RESOURCE MANAGEMENT" "Keys and EndPoint"
+    > ENDPOINT url can be found in your created Cognitive Services blade "RESOURCE MANAGEMENT" "Keys and EndPoint"
 
-1. If you have not already done so, compile the project	
+1. If you have not already done so, build the project	
 1. Open a command prompt and navigate to the build directory for the **TestCLI** project.  It should something like **{GitHubDir}\Lab2-Implement_Computer_Vision\code\Finished\TestCLI**.
 
     > **NOTE** Do not navigate to the debug directory	
-    > **NOTE** .net core 2.2 is requred installation can be find here https://dotnet.microsoft.com/download/dotnet-core/2.2 
+    > **NOTE** .net core 3.1 is requred installation can be find here https://dotnet.microsoft.com/download/dotnet-core/3.1 
 
 1. Run command **dotnet run**	
 

@@ -58,22 +58,8 @@ namespace ImageStorageLibrary
 
         public async Task<IEnumerable<R>> GetItemsAsync(string queryString, QueryRequestOptions options = null)
         {
-            var query = this._container.GetItemQueryIterator<T>(new QueryDefinition(queryString).WithParameter(paramter, parametervalue));
-            List<T> results = new List<T>();
-            while (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-
-                results.AddRange(response.ToList());
-            }
-
-            return results;
-        }
-
-        public async Task<IEnumerable<T>> GetItemsAsync(string queryString)
-        {
-            var query = this._container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
-            List<T> results = new List<T>();
+            var query = this._container.GetItemQueryIterator<R>(queryString,null);
+            List<R> results = new List<R>();
             while (query.HasMoreResults)
             {
                 var response = await query.ReadNextAsync();
