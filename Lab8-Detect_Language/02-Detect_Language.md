@@ -22,72 +22,72 @@ In this lab we are going to integrate language detection ability of cognitive se
 
 1. Open the **Startup.cs** file, add the following using statements:
 
-```csharp
-using Azure.AI.TextAnalytics;
-using Azure;
-```
+    ```csharp
+    using Azure.AI.TextAnalytics;
+    using Azure;
+    ```
 
 1. Add the following code to the **ConfigureServices** method:
 
-```csharp
-services.AddSingleton<TextAnalyticsClient>(sp =>
-{
-    Uri cogsBaseUrl = new Uri(Configuration.GetSection("cogsBaseUrl")?.Value);
-    string cogsKey = Configuration.GetSection("cogsKey")?.Value;
+    ```csharp
+    services.AddSingleton<TextAnalyticsClient>(sp =>
+    {
+        Uri cogsBaseUrl = new Uri(Configuration.GetSection("cogsBaseUrl")?.Value);
+        string cogsKey = Configuration.GetSection("cogsKey")?.Value;
 
-    var credentials = new AzureKeyCredential(cogsKey);
-    return new TextAnalyticsClient(cogsBaseUrl, credentials);
-});
-```
+        var credentials = new AzureKeyCredential(cogsKey);
+        return new TextAnalyticsClient(cogsBaseUrl, credentials);
+    });
+    ```
 
 1. Open the **PictureBot.cs** file, add the following using statements:
 
-```csharp
-using Azure.AI.TextAnalytics;
-```
+    ```csharp
+    using Azure.AI.TextAnalytics;
+    ```
 
 1. Add the following class variable:
 
-```csharp
-private TextAnalyticsClient _textAnalyticsClient;
-```
+    ```csharp
+    private TextAnalyticsClient _textAnalyticsClient;
+    ```
 
 1. Modify the constructor to include the new `TextAnalyticsClient`:
 
-```csharp
-public PictureBot(PictureBotAccessors accessors, LuisRecognizer recognizer, TextAnalyticsClient analyticsClient)
-```
+    ```csharp
+    public PictureBot(PictureBotAccessors accessors, LuisRecognizer recognizer, TextAnalyticsClient analyticsClient)
+    ```
 
 1. Inside the constructor, initialize the class variable:
 
-```csharp
-_textAnalyticsClient = analyticsClient;
-```
+    ```csharp
+    _textAnalyticsClient = analyticsClient;
+    ```
 
 1. Navigate to the **OnTurnAsync** method and find the following line of code:
 
-```csharp
-var utterance = turnContext.Activity.Text;
-var state = await _accessors.PictureState.GetAsync(turnContext, () => new PictureState());
-state.UtteranceList.Add(utterance);
-await _accessors.ConversationState.SaveChangesAsync(turnContext);
-```
+    ```csharp
+    var utterance = turnContext.Activity.Text;
+    var state = await _accessors.PictureState.GetAsync(turnContext, () => new PictureState());
+    state.UtteranceList.Add(utterance);
+    await _accessors.ConversationState.SaveChangesAsync(turnContext);
+    ```
 
 1. Add the following line of code after it
 
-```csharp
-//Check the language
-    DetectedLanguage detectedLanguage = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
-    switch (detectedLanguage.Name)
-    {
-        case "English":
-            break;
-        default:
-            //throw error
-            await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{detectedLanguage.Name}]");
-            break;
-    }
-```
+    ```csharp
+    //Check the language
+        DetectedLanguage detectedLanguage = _textAnalyticsClient.DetectLanguage(turnContext.Activity.Text);
+        switch (detectedLanguage.Name)
+        {
+            case "English":
+                break;
+            default:
+                //throw error
+                await turnContext.SendActivityAsync($"I'm sorry, I can only understand English. [{detectedLanguage.Name}]");
+                break;
+        }
+    ```
 
 1. Everyting you have in the method after `switch` ends move to the `case "English"`. Finally your method should looks like following:
 
@@ -131,10 +131,10 @@ await _accessors.ConversationState.SaveChangesAsync(turnContext);
 
 1. Open the **appsettings.json** file and ensure that your cognitive services settings are entered:
 
-```csharp
-"cogsBaseUrl": "",
-"cogsKey" :  ""
-```
+    ```csharp
+    "cogsBaseUrl": "",
+    "cogsKey" :  ""
+    ```
 
 1. Press **F5** to start your bot
 

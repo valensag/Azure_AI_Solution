@@ -16,149 +16,149 @@ We will have to update our bot in order to use LUIS.  We can do this by modifyin
 
 1. If not already open, open your **PictureBot** solution in Visual Studio
 
-> **NOTE** You can also start with the **{GitHubPath}/Lab7-Integrate_LUIS/code/Starter/PictureBot/PictureBot.sln** solution if you did not start from Lab 1.
-> Be sure to replace all the app settings values
+    > **NOTE** You can also start with the **{GitHubPath}/Lab7-Integrate_LUIS/code/Starter/PictureBot/PictureBot.sln** solution if you did not start from Lab 1.
+    > Be sure to replace all the app settings values
 
 1. Open **Startup.cs** and locate the `ConfigureServices` method. We'll add LUIS here by adding an additional service for LUIS after creating and registering the state accessors.
 
-Below:
+    Below:
 
-```csharp
-services.AddSingleton((Func<IServiceProvider, PictureBotAccessors>)(sp =>
-{
-    .
-    .
-    .
-    return accessors;
-});
-```
+    ```csharp
+    services.AddSingleton((Func<IServiceProvider, PictureBotAccessors>)(sp =>
+    {
+        .
+        .
+        .
+        return accessors;
+    });
+    ```
 
-Add:
+    Add:
 
-```csharp
-// Create and register a LUIS recognizer.
-services.AddSingleton(sp =>
-{
-    var luisApplication = new LuisApplication(
-        Configuration.GetSection("luisAppId")?.Value,
-        Configuration.GetSection("luisAppKey")?.Value,
-        Configuration.GetSection("luisEndPoint")?.Value);
-        // Set the recognizer options depending on which endpoint version you want to use.
-        // More details can be found in https://docs.microsoft.com/en-gb/azure/cognitive-services/luis/luis-migration-api-v3
-        var recognizerOptions = new LuisRecognizerOptionsV3(luisApplication)
-        {
-            PredictionOptions = new Microsoft.Bot.Builder.AI.LuisV3.LuisPredictionOptions
+    ```csharp
+    // Create and register a LUIS recognizer.
+    services.AddSingleton(sp =>
+    {
+        var luisApplication = new LuisApplication(
+            Configuration.GetSection("luisAppId")?.Value,
+            Configuration.GetSection("luisAppKey")?.Value,
+            Configuration.GetSection("luisEndPoint")?.Value);
+            // Set the recognizer options depending on which endpoint version you want to use.
+            // More details can be found in https://docs.microsoft.com/en-gb/azure/cognitive-services/luis/luis-migration-api-v3
+            var recognizerOptions = new LuisRecognizerOptionsV3(luisApplication)
             {
-                IncludeAllIntents = true,
-            }
-        };
-    return new LuisRecognizer(recognizerOptions);
-});
-```
+                PredictionOptions = new Microsoft.Bot.Builder.AI.LuisV3.LuisPredictionOptions
+                {
+                    IncludeAllIntents = true,
+                }
+            };
+        return new LuisRecognizer(recognizerOptions);
+    });
+    ```
 
 1. Modify the **appsettings.json** to include the following properties, be sure to fill them in with your LUIS instance values:
 
-```json
-"luisAppId": "",
-"luisAppKey": "",
-"luisEndPoint": ""
-```
+    ```json
+    "luisAppId": "",
+    "luisAppKey": "",
+    "luisEndPoint": ""
+    ```
 
-> **Note** The Luis endpoint url for the .NET SDK should be something like **https://{region}.api.cognitive.microsoft.com** with no api or version after it.
+    > **Note** The Luis endpoint url for the .NET SDK should be something like **https://{region}.api.cognitive.microsoft.com** with no api or version after it.
 
 ## Lab 7.2: Adding LUIS to PictureBot's MainDialog
 
 1. Open **PictureBot.cs**. The first thing you'll need to do is initialize the LUIS recognizer, similar to how you did for `PictureBotAccessors`. Below the commented line `private readonly PictureBotAccessors _accessors;`, add the following:
 
-```csharp
-private LuisRecognizer _recognizer { get; } = null;
-```
+    ```csharp
+    private LuisRecognizer _recognizer { get; } = null;
+    ```
 
 1. Add following name space to the top if the **PictureBot.cs** file
 
-```csharp
-using Microsoft.Bot.Builder.AI.Luis;
-```
+    ```csharp
+    using Microsoft.Bot.Builder.AI.Luis;
+    ```
 
 1. Navigate to the **PictureBot** constructor. Find line:
 
-```csharp
-public PictureBot(PictureBotAccessors accessors)
-```
+    ```csharp
+    public PictureBot(PictureBotAccessors accessors)
+    ```
 
 1. Add the input requirement (parameter `LuisRecognizer recognizer`)
 
-```csharp
-public PictureBot(PictureBotAccessors accessors, LuisRecognizer recognizer)
-```
+    ```csharp
+    public PictureBot(PictureBotAccessors accessors, LuisRecognizer recognizer)
+    ```
 
 1. Add the following line in the top of the constructor and add `using System;` to the top of the file.
 
-```csharp
-_recognizer = recognizer ?? throw new ArgumentNullException(nameof(recognizer));
-```
+    ```csharp
+    _recognizer = recognizer ?? throw new ArgumentNullException(nameof(recognizer));
+    ```
 
-> Again, this should look very similar to how we initialized the instance of `_accessors`.
+    > Again, this should look very similar to how we initialized the instance of `_accessors`.
 
 As far as updating our `MainDialog` goes, there's no need for us to add anything to the initial `GreetingAsync` step, because regardless of user input, we want to greet the user when the conversation starts.
 
 1. In `MainMenuAsync`, we do want to start by trying Regex, so we'll leave most of that. However, if Regex doesn't find an intent, we want the `default` action to be different. That's when we want to call LUIS.
 
-Within the `MainMenuAsync` switch block, replace:
+    Within the `MainMenuAsync` switch block, replace:
 
-```csharp
-default:
+    ```csharp
+    default:
+        {
+            await MainResponses.ReplyWithConfused(stepContext.Context);
+            return await stepContext.EndDialogAsync();
+        }
+    ```
+
+    With:
+
+    ```csharp
+    default:
     {
-        await MainResponses.ReplyWithConfused(stepContext.Context);
+        // Call LUIS recognizer
+        var result = await _recognizer.RecognizeAsync(stepContext.Context, cancellationToken);
+        // Get the top intent from the results
+        var topIntent = result?.GetTopScoringIntent();
+        // Based on the intent, switch the conversation, similar concept as with Regex above
+        switch ((topIntent != null) ? topIntent.Value.intent : null)
+        {
+            case null:
+                // Add app logic when there is no result.
+                await MainResponses.ReplyWithConfused(stepContext.Context);
+                break;
+            case "None":
+                await MainResponses.ReplyWithConfused(stepContext.Context);
+                // with each statement, we're adding the LuisScore, purely to test, so we know whether LUIS was called or not
+                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                break;
+            case "Greeting":
+                await MainResponses.ReplyWithGreeting(stepContext.Context);
+                await MainResponses.ReplyWithHelp(stepContext.Context);
+                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                break;
+            case "OrderPic":
+                await MainResponses.ReplyWithOrderConfirmation(stepContext.Context);
+                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                break;
+            case "SharePic":
+                await MainResponses.ReplyWithShareConfirmation(stepContext.Context);
+                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                break;
+            case "SearchPic":
+                await MainResponses.ReplyWithSearchConfirmation(stepContext.Context);
+                await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
+                break;
+            default:
+                await MainResponses.ReplyWithConfused(stepContext.Context);
+                break;
+        }
         return await stepContext.EndDialogAsync();
     }
-```
-
-With:
-
-```csharp
-default:
-{
-     // Call LUIS recognizer
-     var result = await _recognizer.RecognizeAsync(stepContext.Context, cancellationToken);
-     // Get the top intent from the results
-     var topIntent = result?.GetTopScoringIntent();
-     // Based on the intent, switch the conversation, similar concept as with Regex above
-     switch ((topIntent != null) ? topIntent.Value.intent : null)
-     {
-         case null:
-             // Add app logic when there is no result.
-             await MainResponses.ReplyWithConfused(stepContext.Context);
-             break;
-         case "None":
-             await MainResponses.ReplyWithConfused(stepContext.Context);
-             // with each statement, we're adding the LuisScore, purely to test, so we know whether LUIS was called or not
-             await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
-             break;
-         case "Greeting":
-             await MainResponses.ReplyWithGreeting(stepContext.Context);
-             await MainResponses.ReplyWithHelp(stepContext.Context);
-             await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
-             break;
-         case "OrderPic":
-             await MainResponses.ReplyWithOrderConfirmation(stepContext.Context);
-             await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
-             break;
-         case "SharePic":
-             await MainResponses.ReplyWithShareConfirmation(stepContext.Context);
-             await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
-             break;
-        case "SearchPic":
-            await MainResponses.ReplyWithSearchConfirmation(stepContext.Context);
-            await MainResponses.ReplyWithLuisScore(stepContext.Context, topIntent.Value.intent, topIntent.Value.score);
-            break;
-         default:
-             await MainResponses.ReplyWithConfused(stepContext.Context);
-             break;
-     }
-    return await stepContext.EndDialogAsync();
-}
-```
+    ```
 
 1. In the same method `MainMenuAsync` let's delete block of empty dialog to avoid confusion. Find following code and delete it:
 
