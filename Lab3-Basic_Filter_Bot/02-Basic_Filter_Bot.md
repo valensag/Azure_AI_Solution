@@ -112,13 +112,13 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 
 1. If you are not prompted then you will need to manually rename the class and then change all references to the class to **PictureBot**.  You will know if you missed one when you attempt to build the project.
 
-1. Right-click the project, select **Manage Nuget Packagaes**
+1. Right-click the project, select **Manage Nuget Packages**
 
 1. Select the **Browse** tab, and install the following packages, ensure that you are using latest version:
 
     * Microsoft.Bot.Builder.Azure.Blobs
-    * Microsoft.Bot.Builder.AI.Luis
     * Microsoft.Bot.Builder.Dialogs
+    * Microsoft.Bot.Builder.AI.Luis    
     * Microsoft.Bot.Builder.Integration.AspNet.Core
     * Azure.AI.TextAnalytics
 
