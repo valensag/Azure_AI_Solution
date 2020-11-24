@@ -1,4 +1,4 @@
-## How to run finished code.
+## How To Run Finished Project.
 
 1. Before you start you must complete [Lab 1: Meeting the Technical Requirements](../Lab1-Technical_Requirements/02-Technical_Requirements.md). As result you should have Cosmos DB, Storage Account and Cognitive Service (General or Vision) deployed in your Azure subscription.
 
