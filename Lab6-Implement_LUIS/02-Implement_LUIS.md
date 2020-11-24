@@ -60,11 +60,11 @@ Creating a LUIS service in the portal is optional. However, if you want to see h
 
 Let's look at how we can use LUIS to add some natural language capabilities. LUIS allows you to map natural language utterances (words/phrases/sentences the user might say when talking to the bot) to intents (tasks or actions the user wants to perform). For our application, we might have several intents: finding pictures, sharing pictures, and ordering prints of pictures, for example. We can give a few example utterances as ways to ask for each of these things, and LUIS will map additional new utterances to each intent based on what it has learned.
 
-> **Warning**: Though Azure services use IE as the default browser, we do not recommend it for LUIS. You should be able to use Chrome or Firefox for all of the labs. Alternatively, you can download either [Microsoft Edge](https://www.microsoft.com/en-us/download/details.aspx?id=48126) or [Google Chrome](https://www.google.com/intl/en/chrome/).
+  > **Warning**: Though Azure services use IE as the default browser, we do not recommend it for LUIS. You should be able to use Chrome or Firefox for all of the labs. Alternatively, you can download either [Microsoft Edge](https://www.microsoft.com/en-us/download/details.aspx?id=48126) or [Google Chrome](https://www.google.com/intl/en/chrome/).
 
 1. Navigate to [https://www.luis.ai](https://www.luis.ai) (**unless you are located in Europe or Australia***). We will create a new LUIS app to support our bot.
 
-> **Note** If you created a key in a **Europe** region, you will need to create your application at [https://eu.luis.ai/](https://eu.luis.ai/). If you created a key in an **Australia** region, you will need to create your application at [https://au.luis.ai/](https://au.luis.ai/). You can read more about the LUIS publishing regions [here](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-regions).
+    > **Note** If you created a key in a **Europe** region, you will need to create your application at [https://eu.luis.ai/](https://eu.luis.ai/). If you created a key in an **Australia** region, you will need to create your application at [https://au.luis.ai/](https://au.luis.ai/). You can read more about the LUIS publishing regions [here](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-regions).
 
 1. Sign in using your Organization or Microsoft account. This should be the same account that you used to create the LUIS key in the previous section.
 
@@ -72,10 +72,10 @@ Let's look at how we can use LUIS to add some natural language capabilities. LUI
 
 1. If this is your first time, you will be asked to agree with service terms of use and select your county.
 
-- On next step you need to chose recommended option and link your Azure account with LUIS.
-- Finally confirm your settings and you will be forwarded to the LUIS App page.
+    - On next step you need to chose recommended option and link your Azure account with LUIS.
+    - Finally confirm your settings and you will be forwarded to the LUIS App page.
 
-> **Note**: Notice that there is also an "Import App" next to the "New App" button on [the current page](https://www.luis.ai/applications).  After creating your LUIS application, you have the ability to export the entire app as JSON and check it into source control.  This is a recommended best practice, so you can version your LUIS models as you version your code.  An exported LUIS app may be re-imported using that "Import App" button.  If you fall behind during the lab and want to cheat, you can select the "Import App" button and import the [LUIS model](./code/LUIS/PictureBotLuisModel.json).
+    > **Note**: Notice that there is also an "Import App" next to the "New App" button on [the current page](https://www.luis.ai/applications).  After creating your LUIS application, you have the ability to export the entire app as JSON and check it into source control.  This is a recommended best practice, so you can version your LUIS models as you version your code.  An exported LUIS app may be re-imported using that "Import App" button.  If you fall behind during the lab and want to cheat, you can select the "Import App" button and import the [LUIS model](./code/LUIS/PictureBotLuisModel.json).
 
 1. From the main page, select the **+ New app** button
 
@@ -85,20 +85,20 @@ Let's look at how we can use LUIS to add some natural language capabilities. LUI
 
 1. select **Done**.  Close the "How to create an effective LUIS app" dialog.
 
-![LUIS New App](../images//LuisNewApp.png)
+    ![LUIS New App](../images//LuisNewApp.png)
 
 1. In the top navigation, select the **BUILD** link.  Notice there is one intent called "None".  Random utterances that don't map to any of your intents may be mapped to "None".
 
-![LUIS Dashboard](../images//LuisCreateIntent.png)
+    ![LUIS Dashboard](../images//LuisCreateIntent.png)
 
-We want our bot to be able to do the following things:
+    We want our bot to be able to do the following things:
 
-- Search/find pictures
-- Share pictures on social media
-- Order prints of pictures
-- Greet the user (although this can also be done other ways, as we will see later)
+    - Search/find pictures
+    - Share pictures on social media
+    - Order prints of pictures
+    - Greet the user (although this can also be done other ways, as we will see later)
 
-Let's create intents for the user requesting each of these.  
+    Let's create intents for the user requesting each of these.  
 
 1. Select the **+ Create** button.
 
@@ -106,9 +106,9 @@ Let's create intents for the user requesting each of these.
 
 1. Give several examples of things the user might say when greeting the bot, pressing "Enter" after each one.
 
-![LUIS Greeting Intent](../images//LuisGreetingIntent.png)
+    ![LUIS Greeting Intent](../images//LuisGreetingIntent.png)
 
-Let's see how to create an entity.  When the user requests to search the pictures, they may specify what they are looking for.  Let's capture that in an entity.
+    Let's see how to create an entity.  When the user requests to search the pictures, they may specify what they are looking for.  Let's capture that in an entity.
 
 1. Select on **Entities** in the left-hand column and then select **+ Create**.  
 
@@ -118,51 +118,51 @@ Let's see how to create an entity.  When the user requests to search the picture
 
 1. Select **Create**.
 
-![Adding an entity named facet, of type Simple](../images/select-facet.png)
+    ![Adding an entity named facet, of type Simple](../images/select-facet.png)
 
 1. Select **Intents** in the left-hand sidebar and then click the **+ Create** button.  
 
 1. Give it an intent name of **SearchPic** and then click **Done**.
 
-Just as we did for Greetings, let's add some sample utterances (words/phrases/sentences the user might say when talking to the bot).  People might search for pictures in many ways.  Feel free to use some of the utterances below, and add your own wording for how you would ask a bot to search for pictures.
+    Just as we did for Greetings, let's add some sample utterances (words/phrases/sentences the user might say when talking to the bot).  People might search for pictures in many ways.  Feel free to use some of the utterances below, and add your own wording for how you would ask a bot to search for pictures.
 
-- Find outdoor pics
-- Are there pictures of a train?
-- Find pictures of food.
-- Search for photos of kids playing
-- Show me beach pics
-- Find dog photos
-- Show me pictures of men wearing glasses
-- Show me happy baby pics
+    - Find outdoor pics
+    - Are there pictures of a train?
+    - Find pictures of food.
+    - Search for photos of kids playing
+    - Show me beach pics
+    - Find dog photos
+    - Show me pictures of men wearing glasses
+    - Show me happy baby pics
 
-Once we have some utterances, we have to teach LUIS how to pick out the **search topic** as the "facet" entity. Whatever the "facet" entity picks up is what will be searched.
+    Once we have some utterances, we have to teach LUIS how to pick out the **search topic** as the "facet" entity. Whatever the "facet" entity picks up is what will be searched.
 
 1. Hover and click the word (or click consecutive words to select a group of words) and then select the "facet" entity.
 
-![Labeling Entity](../images//LuisFacet.png)
+    ![Labeling Entity](../images//LuisFacet.png)
 
-So your utterances may become something like this when facets are labeled:
+    So your utterances may become something like this when facets are labeled:
 
-![Add Facet Entity](../images//SearchPicsIntentAfter.png)
+    ![Add Facet Entity](../images//SearchPicsIntentAfter.png)
 
->**Note** This workshop does not include Azure Cognitive Search, however, this functionality has been left in for the sake of demonstration.
+    >**Note** This workshop does not include Azure Cognitive Search, however, this functionality has been left in for the sake of demonstration.
 
 1. Select **Intents** in the left sidebar and add two more intents:
 
-- Name one intent **"SharePic"**.  This might be identified by utterances like:
+    - Name one intent **"SharePic"**.  This might be identified by utterances like:
 
-  - Share this pic
-  - Can you tweet that?
-  - Post to Twitter
+      - Share this pic
+      - Can you tweet that?
+      - Post to Twitter
 
-- Create another intent named **"OrderPic"**.  This could be communicated with utterances like:
+    - Create another intent named **"OrderPic"**.  This could be communicated with utterances like:
 
-  - Print this picture
-  - I would like to order prints
-  - Can I get an 8x10 of that one
-  - Order wallets
+      - Print this picture
+      - I would like to order prints
+      - Can I get an 8x10 of that one
+      - Order wallets
 
-When choosing utterances, it can be helpful to use a combination of questions, commands, and "I would like to..." formats.
+    When choosing utterances, it can be helpful to use a combination of questions, commands, and "I would like to..." formats.
 
 1. Finally add some sample utterances to the "None" intent. This helps LUIS label when things are outside the scope of your application. Add things like "I'm hungry for pizza", "Search videos", etc. You should have about 10-15% of your app's utterances within the None intent.
 
