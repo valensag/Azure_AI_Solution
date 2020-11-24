@@ -109,7 +109,7 @@ The default bot storage provider uses in-memory storage that gets disposed of wh
 
 1. Click **Containers**, then open the **ChatLog** container
 
-1. Select the chat log file, it should start with **emulator...**, then select **Edit blob**.  What do you see in the files? What don't you see that you were expecting/hoping to see?
+1. Select the chat log file, it should start with **emulator...**, then select **Edit**.  What do you see in the files? What don't you see that you were expecting/hoping to see?
 
     You should see something similar to this:
 

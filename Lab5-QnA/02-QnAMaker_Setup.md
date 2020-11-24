@@ -14,17 +14,19 @@ In this lab we will explore the QnA Maker for creating bots that connect to a pr
 
 4. Select **Create**
 
-5. Type a name
+5. Ensure you lab subscription and resource groups are selected
 
-6. Select the **S0** tier for the resource pricing tier.  We aren't using the free tier because we will upload files that are larger than 1MB later.
+6. Provide a **Name** for the service, such as **ai100QnAgo** replacing **go** with your own initials to create a unique name
 
-7. Select your resource group
+7. Select the **Standard S0** tier for the resource pricing tier.  We aren't using the free tier because we will upload files that are larger than 1MB later.
 
-8. For the search pricing tier, select the **F** tier
+8. Select the same location all our resources have been placed in and then for the search pricing tier, select the **Free F** tier
 
-9. Enter an app name, it must be unique
+9. The **App name** field should populate with the same value you used for **Name** in the previous steps.  If not, enter an app name, it must be unique
 
-10. Select **Create**.  This will create the following resources in your resource group:
+10. Disable **App insights**
+
+11. Select **Review + Create** and then **Create**. This will create the following resources in your resource group:
 
     - App Service Plan
     - App Service
